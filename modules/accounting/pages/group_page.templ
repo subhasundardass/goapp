@@ -1,0 +1,76 @@
+package pages
+
+import (
+	"fmt"
+	"goapp/ent"
+	"goapp/internal/core"
+	"goapp/web/layouts"
+)
+
+templ GroupList(title string, data *core.PaginatedResult[*ent.Acct_Group]) {
+	@layouts.Base(title) {
+		<div class="">
+			<div class="flex items-center justify-between">
+				<h1 class="text-xl font-bold">{ title }</h1>
+				<a href="/accounting/group/new" class="win-btn">
+					<span class="font-semibold text-gray-700">
+						+ New Group
+					</span>
+				</a>
+			</div>
+			@GroupTable(data.Items)
+			@GroupPagination(data)
+		</div>
+	}
+}
+
+templ GroupTable(rows []*ent.Acct_Group) {
+	<div class="overflow-x-auto rounded border border-gray-200  mt-2">
+		<table class="min-w-full text-sm">
+			<thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+				<tr>
+					<th class="w-16  text-left">Code</th>
+					<th class="text-left">Name</th>
+					<th class="text-left">Group</th>
+					<th class="w-32  text-right" style="text-align: right">Balance</th>
+					<th class="text-right" style="text-align: right">Action</th>
+				</tr>
+			</thead>
+			<tbody class="divide-y divide-gray-100">
+				if len(rows) == 0 {
+					<tr>
+						<td colspan="4" class="px-4 py-8 text-center text-gray-400">No ledgers found.</td>
+					</tr>
+				}
+				for _, row := range rows {
+					@GroupRow(row)
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+templ GroupRow(group *ent.Acct_Group) {
+	<tr class="hover:bg-gray-50">
+		<td class="text-gray-500">{ fmt.Sprintf("%s", group.Code) }</td>
+		<td class="font-medium text-gray-800">{ group.Name }</td>
+	</tr>
+}
+
+templ GroupPagination(data *core.PaginatedResult[*ent.Acct_Group]) {
+	if data.TotalPages > 1 {
+		<div class="flex items-center justify-between mt-4 text-sm text-gray-600">
+			<span>
+				{ fmt.Sprintf("Showing %d–%d of %d", (data.Page-1)*data.PerPage+1, min(data.Page*data.PerPage, data.Total), data.Total) }
+			</span>
+			<div class="flex gap-2">
+				if data.Page > 1 {
+					<a href={ templ.SafeURL(fmt.Sprintf("?page=%d", data.Page-1)) } class="px-3 py-1 border rounded hover:bg-gray-50">← Prev</a>
+				}
+				if data.Page < data.TotalPages {
+					<a href={ templ.SafeURL(fmt.Sprintf("?page=%d", data.Page+1)) } class="px-3 py-1 border rounded hover:bg-gray-50">Next →</a>
+				}
+			</div>
+		</div>
+	}
+}

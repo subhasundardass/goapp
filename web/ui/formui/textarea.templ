@@ -1,0 +1,38 @@
+package formui
+
+import (
+	"fmt"
+	"goapp/internal/form"
+)
+
+// props, no error display wrapper id. Replaced with full FieldProps.
+templ TextAreaField(field form.UIField, props FieldProps) {
+	<div class={ props.WrapperClass } id={ "wrapper-" + field.Key }>
+		<textarea
+			id={ fieldID(field, props) }
+			name={ field.Key }
+			class={ props.Class }
+			placeholder={ props.Placeholder }
+			rows={ fmt.Sprintf("%d", rowsOrDefault(props.Rows)) }
+			tabindex={ props.TabIndex }
+			readonly?={ !field.Writable && field.RawValue != nil }
+			disabled?={ props.Disabled }
+			if !field.Visible {
+				hidden
+			}
+		>{ field.Value }</textarea>
+		if props.HintText != "" && field.Error == "" {
+			<p class="text-gray-400 text-xs mt-1">{ props.HintText }</p>
+		}
+		if field.Error != "" {
+			<p class="text-red-500 text-sm mt-1">{ field.Error }</p>
+		}
+	</div>
+}
+
+func rowsOrDefault(rows int) int {
+	if rows <= 0 {
+		return 3
+	}
+	return rows
+}

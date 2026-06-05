@@ -1,0 +1,10 @@
+{
+    "name": "example",
+    "base_path": "/example",
+    "enabled": true,
+    "version": "1.0.0",
+    "description": "Example module",
+    "dependencies": [],
+    "middlewares": [],
+    "tags": ["api"]
+}

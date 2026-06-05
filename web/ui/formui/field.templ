@@ -1,0 +1,30 @@
+package formui
+
+import "goapp/internal/form"
+
+// Field is the smart dispatcher — it renders any UIField by inspecting its
+// FieldType and delegating to the correct component.
+//
+// Usage in a page template:
+//
+//	for _, f := range fields {
+//	    @formui.Field(f, formui.DefaultProps())
+//	}
+//
+// This means page templates never need a switch statement on FieldType.
+templ Field(field form.UIField, props FieldProps) {
+	switch field.Meta.Type {
+		case form.String, form.Email, form.Date, form.DateTime, form.File:
+			@TextField(field, props)
+		case form.Number:
+			@NumberField(field, props)
+		case form.Select, form.Radio:
+			@SelectField(field, props)
+		case form.Bool:
+			@CheckboxField(field, props)
+		case form.TextArea:
+			@TextAreaField(field, props)
+		default:
+			@TextField(field, props)
+	}
+}

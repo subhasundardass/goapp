@@ -1,0 +1,10 @@
+{
+    "name": "accounting",
+    "base_path": "/accounting",
+    "enabled": true,
+    "version": "1.0.0",
+    "description": "Accounting module",
+    "dependencies": [],
+    "middlewares": [],
+    "tags": ["api"]
+}

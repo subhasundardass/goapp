@@ -1,0 +1,53 @@
+package formui
+
+import "goapp/internal/form"
+
+// fieldID returns props.ID if set, otherwise field.Key.
+func fieldID(field form.UIField, props FieldProps) string {
+	if props.ID != "" {
+		return props.ID
+	}
+	return field.Key
+}
+func fieldType(t form.FieldType) string {
+	switch t {
+	case form.Email:
+		return "email"
+	case form.Date:
+		return "date"
+	case form.DateTime:
+		return "datetime-local"
+	case form.File:
+		return "file"
+	default:
+		return "text"
+	}
+}
+
+templ TextField(field form.UIField, props FieldProps) {
+	<div class={ props.WrapperClass } id={ "wrapper-" + field.Key }>
+		<input
+			type={ fieldType(field.Meta.Type) }
+			id={ fieldID(field, props) }
+			name={ field.Key }
+			class={ props.Class }
+			value={ field.Value }
+			placeholder={ props.Placeholder }
+			autocomplete={ props.AutoComplete }
+			tabindex={ props.TabIndex }
+			disabled?={ props.Disabled }
+			readonly?={ !field.Writable && !props.Disabled }
+			autofocus?={ props.AutoFocus }
+			if props.Endpoint != "" {
+				data-on:input__debounce.100ms={ `@post('` + props.Endpoint + `')` }
+			}
+			data-bind={ field.Key }
+		/>
+		if props.HintText != "" && field.Error == "" {
+			<p class="text-gray-400 text-xs mt-1">{ props.HintText }</p>
+		}
+		if field.Error != "" {
+			<p class="text-red-500 text-sm mt-1">{ field.Error }</p>
+		}
+	</div>
+}

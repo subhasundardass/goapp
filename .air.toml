@@ -1,0 +1,13 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "templ generate && go build -o ./tmp/main ./cmd/web"
+  include_ext = ["go", "templ"]
+  bin = "./tmp/main"
+  full_bin = "./tmp/main"
+  exclude_dir = ["tmp", "vendor", "ent"]
+  delay = 1000
+
+[screen]
+  clear_on_rebuild = true

@@ -1,0 +1,53 @@
+package layouts
+
+templ Base(title string) {
+	<!DOCTYPE html>
+	<html class="h-screen">
+		<head>
+			<title>{ title }</title>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<!-- PWA -->
+			<link rel="manifest" href="/static/manifest.webmanifest"/>
+			<meta name="theme-color" content="#2563eb"/>
+			<meta name="mobile-web-app-capable" content="yes"/>
+			<meta name="apple-mobile-web-app-capable" content="yes"/>
+			<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+			<link rel="icon" href="/static/icons/icon-192.png"/>
+			<link rel="stylesheet" href="/static/css/app.css"/>
+			<script type="module" src="/static/js/datastar.js"></script>
+		</head>
+		<body class="h-screen flex flex-col overflow-hidden">
+			<!-- HEADER -->
+			<div class="shrink-0">
+				@Header()
+			</div>
+			<!-- TOOLBAR -->
+			<div class="shrink-0">
+				@Toolbar()
+			</div>
+			<!-- MAIN AREA (SIDEBAR + CONTENT) -->
+			<main class="flex flex-1 min-h-0 overflow-hidden">
+				<!-- CONTENT -->
+				<section class="flex-1 min-h-0 overflow-auto">
+					<div class="p-2">
+						{ children... }
+					</div>
+				</section>
+				<!-- SIDEBAR -->
+				<aside class="w-64 shrink-0 border-l border-gray-300 overflow-auto bg-base-100">
+					@Sidebar()
+				</aside>
+			</main>
+			<!-- FOOTER -->
+			<div class="shrink-0">
+				@Footer()
+			</div>
+			<script>
+				if ("serviceWorker" in navigator) {
+					navigator.serviceWorker.register("/static/sw.js");
+				}
+			</script>
+		</body>
+	</html>
+}

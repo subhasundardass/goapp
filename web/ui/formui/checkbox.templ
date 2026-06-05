@@ -1,0 +1,34 @@
+package formui
+
+import "goapp/internal/form"
+
+// components. Original had no props — you couldn't style it at all.
+templ CheckboxField(field form.UIField, props FieldProps) {
+	<div class={ props.WrapperClass } id={ "wrapper-" + field.Key }>
+		<label class={ "inline-flex items-center gap-2 " + props.LabelClass }>
+			<input
+				type="checkbox"
+				id={ fieldID(field, props) }
+				name={ field.Key }
+				value="true"
+				checked?={ field.Value == "true" }
+				class={ props.Class }
+				tabindex={ props.TabIndex }
+				disabled?={ !field.Writable || props.Disabled }
+				if !field.Visible {
+					hidden
+				}
+			/>
+			{ field.Meta.Label }
+			if field.Meta.Required {
+				<span class="text-red-500 ml-0.5">*</span>
+			}
+		</label>
+		if props.HintText != "" && field.Error == "" {
+			<p class="text-gray-400 text-xs mt-1">{ props.HintText }</p>
+		}
+		if field.Error != "" {
+			<p class="text-red-500 text-sm mt-1">{ field.Error }</p>
+		}
+	</div>
+}

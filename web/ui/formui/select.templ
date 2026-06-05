@@ -1,0 +1,45 @@
+package formui
+
+import "goapp/internal/form"
+
+templ SelectField(field form.UIField, props FieldProps) {
+	<div class={ props.WrapperClass } id={ "wrapper-" + field.Key }>
+		<select
+			id={ fieldID(field, props) }
+			name={ field.Key }
+			class={ "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 " +
+				"shadow-xs outline-none transition-all " +
+				"focus:border-blue-500 focus:ring-2 focus:ring-blue-200 " +
+				"disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed " +
+				props.Class }
+			tabindex={ props.TabIndex }
+			disabled?={ !field.Writable || props.Disabled }
+			if !field.Visible {
+				hidden
+			}
+			data-bind={ field.Key }
+			data-on:input={ `@post('` + props.Endpoint + `')` }
+		>
+			if props.Placeholder != "" {
+				<option value="" disabled?={ field.Value != "" } selected?={ field.Value == "" }>
+					{ props.Placeholder }
+				</option>
+			}
+			for _, opt := range field.Meta.Options {
+				<option
+					value={ opt.Value }
+					selected?={ field.Value == opt.Value }
+					class="py-2 text-sm"
+				>
+					{ opt.Label }
+				</option>
+			}
+		</select>
+		if props.HintText != "" && field.Error == "" {
+			<p class="mt-1 text-xs text-gray-500">{ props.HintText }</p>
+		}
+		if field.Error != "" {
+			<p class="mt-1 text-sm text-red-500">{ field.Error }</p>
+		}
+	</div>
+}

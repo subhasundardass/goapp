@@ -1,0 +1,85 @@
+package pages
+
+import (
+	"goapp/internal/form"
+	"goapp/web/layouts"
+	"goapp/web/ui/formui"
+)
+
+templ ExamplePage(title string, ui map[string]form.UIField) {
+	@layouts.Base(title) {
+		<div class="p-4 space-y-1">
+			<h1 class="text-xl font-bold">{ title }</h1>
+			<div class="grid grid-cols-2 gap-2">
+				<div class="flex gap-4 items-center ">
+					<label for={ ui["itemName"].Meta.Name } class="w-30">{ ui["itemName"].Meta.Label }</label> : 
+					@formui.TextField(ui["itemName"], formui.FieldProps{
+						Class:    "input input-bordered w-full",
+						Endpoint: "/example/compute",
+					})
+				</div>
+				<p>
+					Live value: <span data-text="$itemName"></span>
+				</p>
+				<div class="flex gap-4 items-center">
+					<label for={ ui["paymentMode"].Meta.Name } class="w-30">{ ui["paymentMode"].Meta.Label }</label> : 
+					@formui.SelectField(ui["paymentMode"], formui.FieldProps{
+						Class: "w-3xs",
+					})
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["qty"].Meta.Name } class="w-30">{ ui["qty"].Meta.Label }</label> : 
+						@formui.NumberField(ui["qty"], formui.FieldProps{})
+					</div>
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["rate"].Meta.Name } class="w-30">{ ui["rate"].Meta.Label }</label> : 
+						@formui.NumberField(ui["rate"], formui.FieldProps{})
+					</div>
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["taxPercent"].Meta.Name } class="w-30">{ ui["taxPercent"].Meta.Label }</label> : 
+						@formui.NumberField(ui["taxPercent"], formui.FieldProps{})
+					</div>
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["amount"].Meta.Name } class="w-30">{ ui["amount"].Meta.Label }</label> : 
+						@formui.NumberField(ui["amount"], formui.FieldProps{Endpoint: "/example/compute"})
+					</div>
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["taxAmount"].Meta.Name } class="w-30">{ ui["taxAmount"].Meta.Label }</label> : 
+						@formui.NumberField(ui["taxAmount"], formui.FieldProps{Endpoint: "/example/compute"})
+					</div>
+				</div>
+				<div>
+					<div class="flex gap-4 items-center ">
+						<label for={ ui["grandTotal"].Meta.Name } class="w-30">{ ui["grandTotal"].Meta.Label }</label> : 
+						@formui.NumberField(ui["grandTotal"], formui.FieldProps{Endpoint: "/example/compute"})
+					</div>
+				</div>
+				<div class="flex gap-4 items-center ">
+					<label for={ ui["gender"].Meta.Name } class="w-30">{ ui["gender"].Meta.Label }</label> : 
+					@formui.SelectField(ui["gender"], formui.FieldProps{
+						Class: "w-3xs",
+					})
+				</div>
+				<div class="flex gap-4 items-center ">
+					<label for={ ui["is_active"].Meta.Name } class="w-30">{ ui["is_active"].Meta.Label }</label> : 
+					@formui.CheckboxField(ui["is_active"], formui.FieldProps{})
+				</div>
+				<div class="flex gap-4 items-base">
+					<label for={ ui["remarks"].Meta.Name } class="w-30">{ ui["remarks"].Meta.Label }</label> : 
+					@formui.TextAreaField(ui["remarks"], formui.FieldProps{
+						Class: "w-lg",
+					})
+				</div>
+			</div>
+		</div>
+	}
+}

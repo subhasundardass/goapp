@@ -1,0 +1,33 @@
+package formui
+
+import "goapp/internal/form"
+
+templ NumberField(field form.UIField, props FieldProps) {
+	<div class={ props.WrapperClass } id={ "wrapper-" + field.Key }>
+		<input
+			type="number"
+			id={ fieldID(field, props) }
+			name={ field.Key }
+			value={ field.Value }
+			class={ props.Class }
+			placeholder={ props.Placeholder }
+			step={ props.Step }
+			min={ props.Min }
+			max={ props.Max }
+			tabindex={ props.TabIndex }
+			disabled?={ !field.Writable || props.Disabled }
+			autofocus?={ props.AutoFocus }
+			if !field.Visible {
+				hidden
+			}
+			data-bind={ field.Key }
+			data-on-input={ `@post('` + props.Endpoint + `')` }
+		/>
+		if props.HintText != "" && field.Error == "" {
+			<p class="text-gray-400 text-xs mt-1">{ props.HintText }</p>
+		}
+		if field.Error != "" {
+			<p class="text-red-500 text-sm mt-1">{ field.Error }</p>
+		}
+	</div>
+}

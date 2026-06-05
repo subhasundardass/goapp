@@ -1,0 +1,10 @@
+{
+    "name": "settings",
+    "base_path": "/settings",
+    "enabled": true,
+    "version": "1.0.0",
+    "description": "Settings module",
+    "dependencies": [],
+    "middlewares": [],
+    "tags": ["api"]
+}

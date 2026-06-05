@@ -1,0 +1,60 @@
+package pages
+
+import (
+	"goapp/internal/form"
+	"goapp/web/layouts"
+	"goapp/web/ui/formui"
+)
+
+templ PartyNew(title string, ui map[string]form.UIField) {
+	@layouts.Base(title) {
+		<div class="">
+			<div class="flex items-center justify-between mb-4">
+				<h1 class="text-xl font-bold">{ title }</h1>
+				<a href="/accounting/party/new" class="win-btn">
+					<span class="font-semibold text-gray-700">
+						+ New Party
+					</span>
+				</a>
+			</div>
+			@PartyForm(ui)
+		</div>
+	}
+}
+
+templ PartyForm(ui map[string]form.UIField) {
+	<div class="grid grid-cols-12 gap-2">
+		<div class="col-span-6 flex gap-4 items-center">
+			<label for={ ui["display_name"].Meta.Name } class="w-24">{ ui["display_name"].Meta.Label }</label> <span>:</span>
+			<div class="flex-1">
+				@formui.TextField(ui["display_name"], formui.FieldProps{
+					Class: "w-full",
+				})
+			</div>
+		</div>
+		<div class="col-span-2 flex gap-4 items-center">
+			<label for={ ui["party_type"].Meta.Name } class="w-24">{ ui["party_type"].Meta.Label }</label> <span>:</span>
+			<div class="flex-1 w-24">
+				@formui.SelectField(ui["party_type"], formui.FieldProps{})
+			</div>
+		</div>
+		<div class="col-span-4 flex gap-4 items-center">
+			<label for={ ui["ledgers"].Meta.Name } class="w-24">{ ui["ledgers"].Meta.Label }</label> <span>:</span>
+			<div class="flex-1">
+				@formui.SelectField(ui["ledgers"], formui.FieldProps{})
+			</div>
+		</div>
+		<div class="col-span-3 flex gap-4 items-center">
+			<label for={ ui["city"].Meta.Name } class="w-24">{ ui["city"].Meta.Label }</label> <span>:</span>
+			<div class="flex-1">
+				@formui.TextField(ui["city"], formui.FieldProps{})
+			</div>
+		</div>
+		<div class="col-span-3 flex gap-4 items-center">
+			<label for={ ui["countries"].Meta.Name } class="w-24">{ ui["countries"].Meta.Label }</label> <span>:</span>
+			<div class="flex-1">
+				@formui.SelectField(ui["countries"], formui.FieldProps{})
+			</div>
+		</div>
+	</div>
+}
