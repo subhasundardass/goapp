@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"goapp/ent"
 	"goapp/internal/core"
+	"goapp/modules/accounting/model"
 	"goapp/modules/accounting/repository"
 )
 
@@ -26,6 +28,9 @@ func NewAccountingService(repos *repository.Repositories, logger *slog.Logger) *
 // ── Queries ───────────────────────────────────────────────────────────────────
 func (s *AccountingService) CountryList(ctx context.Context) ([]*ent.Country, error) {
 	return s.repos.Accounting.CountryList(ctx)
+}
+func (s *AccountingService) StateList(ctx context.Context) ([]*ent.State, error) {
+	return s.repos.Accounting.StateList(ctx)
 }
 
 // func (s *AccountingService) List(ctx context.Context) ([]any, error) {
@@ -62,18 +67,28 @@ func (s *AccountingService) FindLedgerByID(ctx context.Context, id int) (any, er
 
 // ── Commands ──────────────────────────────────────────────────────────────────
 
-func (s *AccountingService) Create(ctx context.Context, name, description string) (any, error) {
-	if err := s.ValidateRequired(map[string]string{"name": name}); err != nil {
+func (s *AccountingService) CreateParty(ctx context.Context, input model.PartyInput) (any, error) {
+
+	name := fmt.Sprint(input.DisplayName)
+
+	if err := s.ValidateRequired(map[string]string{
+		"display_name": name,
+	}); err != nil {
 		return nil, err
 	}
-	if err := s.ValidateMinLength("name", name, 2); err != nil {
+
+	if err := s.ValidateMinLength("display_name", name, 2); err != nil {
 		return nil, err
 	}
-	if err := s.ValidateMaxLength("name", name, 255); err != nil {
+
+	if err := s.ValidateMaxLength("display_name", name, 255); err != nil {
 		return nil, err
 	}
-	item, err := s.repos.Accounting.Create(ctx, name, description)
-	return item, s.WrapError("Create", err)
+
+	// call repo (pass full input or extracted values)
+	item, err := s.repos.Accounting.CreateParty(ctx, input)
+
+	return item, s.WrapError("CreateParty", err)
 }
 
 func (s *AccountingService) Update(ctx context.Context, id int, name, description string) (any, error) {

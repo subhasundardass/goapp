@@ -6,7 +6,9 @@ import (
 
 	"goapp/ent"
 	"goapp/ent/ledger"
+	"goapp/ent/state"
 	"goapp/internal/core"
+	"goapp/modules/accounting/model"
 )
 
 // AccountingRepository handles all DB operations for Accounting.
@@ -38,6 +40,14 @@ func (r *AccountingRepository) ListPaginated(ctx context.Context, offset, limit 
 func (r *AccountingRepository) CountryList(ctx context.Context) ([]*ent.Country, error) {
 	return r.db.Country.
 		Query().
+		All(ctx)
+}
+
+// State List
+func (r *AccountingRepository) StateList(ctx context.Context) ([]*ent.State, error) {
+	return r.db.State.
+		Query().
+		Order(ent.Asc(state.FieldName)).
 		All(ctx)
 }
 
@@ -140,9 +150,70 @@ func (r *AccountingRepository) FindLedgerByID(
 	return ledger, nil
 }
 
-func (r *AccountingRepository) Create(ctx context.Context, name, description string) (any, error) {
-	// TODO: return r.db.Accounting.Create().SetName(name).SetDescription(description).Save(ctx)
-	return nil, nil
+func (r *AccountingRepository) CreateParty(ctx context.Context, input model.PartyInput) (*ent.PartyMaster, error) {
+
+	q := r.db.PartyMaster.Create()
+
+	q.SetDisplayName(input.DisplayName)
+	q.SetType(input.Type)
+
+	q.SetLedgerID(core.ToInt(input.LedgerID))
+
+	if input.LegalName != nil {
+		q.SetLegalName(*input.LegalName)
+	}
+
+	if input.GSTNo != nil {
+		q.SetGstNo(*input.GSTNo)
+	}
+
+	if input.PANNo != nil {
+		q.SetPanNo(*input.PANNo)
+	}
+
+	if input.ContactPerson != nil {
+		q.SetContactPerson(*input.ContactPerson)
+	}
+
+	if input.Mobile != nil {
+		q.SetMobile(*input.Mobile)
+	}
+
+	if input.Phone != nil {
+		q.SetPhone(*input.Phone)
+	}
+
+	if input.Email != nil {
+		q.SetEmail(*input.Email)
+	}
+
+	if input.Website != nil {
+		q.SetWebsite(*input.Website)
+	}
+
+	q.SetCreditLimit(core.ToFloat(input.CreditLimit))
+	q.SetCreditDays(input.CreditDays)
+	q.SetOpeningBalance(core.ToFloat(input.OpeningBalance))
+
+	if input.Address != nil {
+		q.SetAddress(*input.Address)
+	}
+
+	if input.City != nil {
+		q.SetCity(*input.City)
+	}
+
+	if input.State != nil {
+		q.SetState(*input.State)
+	}
+
+	q.SetCountry(input.Country)
+
+	if input.Pincode != nil {
+		q.SetPincode(*input.Pincode)
+	}
+
+	return q.Save(ctx)
 }
 
 func (r *AccountingRepository) Update(ctx context.Context, id int, name, description string) (any, error) {

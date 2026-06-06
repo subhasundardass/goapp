@@ -33,7 +33,9 @@ templ TextField(field form.UIField, props FieldProps) {
 			class={ props.Class }
 			value={ field.Value }
 			placeholder={ props.Placeholder }
-			autocomplete={ props.AutoComplete }
+			if props.AutoComplete != "" {
+				autocomplete={ props.AutoComplete }
+			}
 			tabindex={ props.TabIndex }
 			disabled?={ props.Disabled }
 			readonly?={ !field.Writable && !props.Disabled }

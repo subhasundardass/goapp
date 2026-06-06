@@ -28,5 +28,5 @@ func NewDBClient(dsn string, autoMigrate bool) *ent.Client {
 		}
 	}
 
-	return client
+	return client.Debug()
 }

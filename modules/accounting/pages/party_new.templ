@@ -8,53 +8,157 @@ import (
 
 templ PartyNew(title string, ui map[string]form.UIField) {
 	@layouts.Base(title) {
-		<div class="">
-			<div class="flex items-center justify-between mb-4">
-				<h1 class="text-xl font-bold">{ title }</h1>
-				<a href="/accounting/party/new" class="win-btn">
-					<span class="font-semibold text-gray-700">
-						+ New Party
-					</span>
-				</a>
-			</div>
+		<div class="w-full flex items-center justify-between p-2">
+			<h1 class="text-lg font-bold">{ title }</h1>
+			<a href="/accounting/party" class="win-btn">
+				<span class="font-semibold text-gray-700">+ Party List</span>
+			</a>
+		</div>
+		<div style="width: 80%">
 			@PartyForm(ui)
+			@PartyAction()
 		</div>
 	}
 }
 
 templ PartyForm(ui map[string]form.UIField) {
-	<div class="grid grid-cols-12 gap-2">
-		<div class="col-span-6 flex gap-4 items-center">
-			<label for={ ui["display_name"].Meta.Name } class="w-24">{ ui["display_name"].Meta.Label }</label> <span>:</span>
-			<div class="flex-1">
-				@formui.TextField(ui["display_name"], formui.FieldProps{
-					Class: "w-full",
-				})
+	<div class="flex flex-col gap-2">
+		<fieldset class="border border-gray-300 rounded-md p-4">
+			<legend class="px-2 text-sm font-semibold text-gray-700">
+				Customer Information
+			</legend>
+			<div class="flex flex-col gap-2">
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["display_name"].Meta.Name } class="w-32 shrink-0">{ ui["display_name"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["display_name"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["party_type"].Meta.Name } class="w-32 shrink-0">{ ui["party_type"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.SelectField(ui["party_type"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["ledger_id"].Meta.Name } class="w-32 shrink-0">{ ui["ledger_id"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.SelectField(ui["ledger_id"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["legal_name"].Meta.Name } class="w-32 shrink-0">{ ui["legal_name"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["legal_name"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["gst_no"].Meta.Name } class="w-32 shrink-0">{ ui["gst_no"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["gst_no"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["pan_no"].Meta.Name } class="w-32 shrink-0">{ ui["pan_no"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["pan_no"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="col-span-2 flex gap-4 items-center">
-			<label for={ ui["party_type"].Meta.Name } class="w-24">{ ui["party_type"].Meta.Label }</label> <span>:</span>
-			<div class="flex-1 w-24">
-				@formui.SelectField(ui["party_type"], formui.FieldProps{})
+		</fieldset>
+		<fieldset class="border border-gray-300 rounded-md p-4">
+			<legend class="px-2 text-sm font-semibold text-gray-700">
+				Credit and Limitation
+			</legend>
+			<div class="flex flex-col gap-2">
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["credit_limit"].Meta.Name } class="w-32 shrink-0">{ ui["credit_limit"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["credit_limit"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["credit_days"].Meta.Name } class="w-32 shrink-0">{ ui["credit_days"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["credit_days"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["opening_balance"].Meta.Name } class="w-32 shrink-0">{ ui["opening_balance"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["opening_balance"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="col-span-4 flex gap-4 items-center">
-			<label for={ ui["ledgers"].Meta.Name } class="w-24">{ ui["ledgers"].Meta.Label }</label> <span>:</span>
-			<div class="flex-1">
-				@formui.SelectField(ui["ledgers"], formui.FieldProps{})
+		</fieldset>
+		<fieldset class="border border-gray-300 rounded-md p-4">
+			<legend class="px-2 text-sm font-semibold text-gray-700">
+				Customer Communication
+			</legend>
+			<div class="flex flex-col gap-2">
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["contact_person"].Meta.Name } class="w-32 shrink-0">{ ui["contact_person"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["contact_person"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["mobile"].Meta.Name } class="w-32 shrink-0">{ ui["mobile"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["mobile"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["phone"].Meta.Name } class="w-32 shrink-0">{ ui["phone"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["phone"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["address"].Meta.Name } class="w-32 shrink-0">{ ui["address"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["address"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["city"].Meta.Name } class="w-32 shrink-0">{ ui["city"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["city"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["states"].Meta.Name } class="w-32 shrink-0">{ ui["states"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.SelectField(ui["states"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["countries"].Meta.Name } class="w-32 shrink-0">{ ui["countries"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.SelectField(ui["countries"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
+				<div class="flex gap-4 items-center">
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["pincode"].Meta.Name } class="w-32 shrink-0">{ ui["pincode"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["pincode"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["email"].Meta.Name } class="w-32 shrink-0">{ ui["email"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["email"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+					<div class="flex gap-2 items-center flex-1">
+						<label for={ ui["website"].Meta.Name } class="w-32 shrink-0">{ ui["website"].Meta.Label }</label>
+						<span class="shrink-0">:</span>
+						@formui.TextField(ui["website"], formui.FieldProps{WrapperClass: "flex-1 min-w-0"})
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="col-span-3 flex gap-4 items-center">
-			<label for={ ui["city"].Meta.Name } class="w-24">{ ui["city"].Meta.Label }</label> <span>:</span>
-			<div class="flex-1">
-				@formui.TextField(ui["city"], formui.FieldProps{})
-			</div>
-		</div>
-		<div class="col-span-3 flex gap-4 items-center">
-			<label for={ ui["countries"].Meta.Name } class="w-24">{ ui["countries"].Meta.Label }</label> <span>:</span>
-			<div class="flex-1">
-				@formui.SelectField(ui["countries"], formui.FieldProps{})
-			</div>
-		</div>
+		</fieldset>
+	</div>
+}
+
+templ PartyAction() {
+	<div class="mt-4">
+		<button class="win-btn" data-on:click="@post('/accounting/party/new')"><span class="font-semibold text-gray-700">+ Save</span></button>
+		<button class="win-btn" data-on:click="@get('/accounting/party')"><span class="font-semibold text-gray-700">x Cancel</span></button>
 	</div>
 }

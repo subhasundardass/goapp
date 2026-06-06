@@ -196,7 +196,6 @@ JWT_EXPIRY=24h
 # MODULES
 # =========================
 MODULE_AUTO_LOAD=true
-MODULE_EXAMPLE_ENABLED=true
 
 # =========================
 # CORS

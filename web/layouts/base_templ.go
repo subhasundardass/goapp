@@ -58,7 +58,7 @@ func Base(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><!-- MAIN AREA (SIDEBAR + CONTENT) --><main class=\"flex flex-1 min-h-0 overflow-hidden\"><!-- CONTENT --><section class=\"flex-1 min-h-0 overflow-auto\"><div class=\"p-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><!-- MAIN AREA (SIDEBAR + CONTENT) --><main class=\"flex flex-1 min-h-0 overflow-hidden\"><!-- CONTENT --><section class=\"flex-1 min-h-0 overflow-auto w-full\"><div class=\"p-2 w-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

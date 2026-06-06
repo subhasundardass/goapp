@@ -27,6 +27,7 @@ const (
 	Email    FieldType = "email"
 	TextArea FieldType = "textarea"
 	File     FieldType = "file"
+	Lookup   FieldType = "lookup"
 )
 
 // Option is a single choice in a Select or Radio field.

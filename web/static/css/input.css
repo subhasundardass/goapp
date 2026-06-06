@@ -133,7 +133,10 @@
 /* =========================
    BASE
 ========================= */
-
+label{
+  @apply text-sm;
+  @apply font-medium;
+}
 input,
 select,
 textarea {
@@ -146,7 +149,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  @apply ring-2 ring-ring border-ring;
+  @apply ring-1 ring-ring border-ring;
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
@@ -157,10 +160,12 @@ textarea:focus {
   @apply bg-muted text-foreground;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   transition: all 0.15s ease;
+  
 }
 
 .win-btn:hover {
   @apply bg-accent;
+  cursor: pointer;
 }
 
 .win-btn:active {
@@ -169,7 +174,7 @@ textarea:focus {
 }
 
 .win-btn:focus {
-  @apply outline-none ring-2 ring-ring;
+  @apply outline-none ring-1 ring-ring;
 }
 
 .win-icon-btn {

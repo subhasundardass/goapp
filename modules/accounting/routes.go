@@ -21,7 +21,7 @@ func Routes(h *handler.Handlers) []core.Route {
 		// ── Party ── specific paths BEFORE /:id
 		{Method: "GET", Path: "/party", Handler: h.Accounting.PartyList},
 		{Method: "GET", Path: "/party/new", Handler: h.Accounting.PartyNew},
-		// {Method: "POST", Path: "/party/new", Handler: h.Accounting.PartyCreate},
+		{Method: "POST", Path: "/party/new", Handler: h.Accounting.PartyCreate},
 
 		// ── Generic (keep at bottom) ──
 		// {Method: "POST", Path: "/", Handler: h.Accounting.Create},

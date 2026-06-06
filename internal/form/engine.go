@@ -3,7 +3,12 @@ package form
 import (
 	"errors"
 	"fmt"
+	"reflect"
+	"strconv"
 	"strings"
+	"unicode"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,7 +27,6 @@ type Engine struct {
 // NewEngine builds an Engine from a FormModel and initialises all fields.
 // Computed fields are evaluated immediately if their dependencies have defaults.
 func NewEngine(model FormModel) (*Engine, error) {
-	// FIX: detect dependency cycles before accepting the model
 	if err := detectCycles(model); err != nil {
 		return nil, fmt.Errorf("form: invalid model: %w", err)
 	}
@@ -112,6 +116,119 @@ func (e *Engine) Apply(values map[string]any) map[string]error {
 		}
 	}
 	return errs
+}
+
+// Binding to Fiber Context
+func (e *Engine) BindRequest(c *fiber.Ctx) error {
+	contentType := c.Get("Content-Type")
+
+	if strings.Contains(contentType, "application/json") {
+		var values map[string]any
+
+		if err := c.BodyParser(&values); err != nil {
+			return err
+		}
+
+		e.Apply(values)
+		return nil
+	}
+
+	values := map[string]any{}
+
+	for key := range e.model {
+		values[key] = c.FormValue(key)
+	}
+
+	e.Apply(values)
+
+	return nil
+}
+
+func (f FormState) Bind(out any) error {
+	v := reflect.ValueOf(out)
+	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("out must be pointer to struct")
+	}
+
+	v = v.Elem()
+	t := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		field := t.Field(i)
+		key := field.Tag.Get("form")
+		if key == "" {
+			key = toSnake(field.Name)
+			// continue // force explicit mapping only
+		}
+
+		val, ok := f[key]
+		if !ok {
+			continue
+		}
+
+		fv := v.Field(i)
+		if !fv.CanSet() {
+			continue
+		}
+
+		setValue(fv, val)
+	}
+
+	return nil
+}
+
+func toSnake(s string) string {
+	var result strings.Builder
+
+	for i, r := range s {
+		if unicode.IsUpper(r) {
+			// add underscore before uppercase (except first char)
+			if i > 0 {
+				result.WriteByte('_')
+			}
+			result.WriteRune(unicode.ToLower(r))
+		} else {
+			result.WriteRune(r)
+		}
+	}
+
+	return result.String()
+}
+
+func setValue(field reflect.Value, val any) {
+	if val == nil {
+		return
+	}
+
+	switch field.Kind() {
+
+	case reflect.String:
+		field.SetString(fmt.Sprint(val))
+
+	case reflect.Int, reflect.Int64:
+		i, err := strconv.ParseInt(fmt.Sprint(val), 10, 64)
+		if err != nil {
+			panic(fmt.Errorf("invalid int value: %v", val))
+		}
+		field.SetInt(i)
+
+	case reflect.Float64:
+		f, err := strconv.ParseFloat(fmt.Sprint(val), 64)
+		if err != nil {
+			return
+		}
+		field.SetFloat(f)
+
+	case reflect.Pointer:
+		elemType := field.Type().Elem()
+		elem := reflect.New(elemType).Elem()
+
+		setValue(elem, val)
+
+		if !elem.IsZero() {
+			field.Set(elem.Addr())
+		}
+	}
 }
 
 // Reset clears all fields to nil (or their Default) and recomputes.
